@@ -19,7 +19,7 @@ export default {
     },
     extend: {
       backgroundImage: {
-        'bg': "url('/herb_ai_web/public/bg.jpg')",
+        bgImage:  "url('/bg.jpg')",
       },
       spacing: {
         '128': '32rem',
