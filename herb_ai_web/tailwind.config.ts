@@ -18,6 +18,9 @@ export default {
       serif: ['Merriweather', 'serif'],
     },
     extend: {
+      backgroundImage: {
+        'bg': "url('/herb_ai_web/public/bg.jpg')",
+      },
       spacing: {
         '128': '32rem',
         '144': '36rem',
