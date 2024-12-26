@@ -32,7 +32,7 @@ export default function Home() {
           // Create the request body with the base64 image
           const requestBody = { "imageBuffer": base64Image };
 
-          const response = await fetch('https://herb-ai.onrender.com/predict', {
+          const response = await fetch('http://192.168.224.26:5000/predict', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json'
