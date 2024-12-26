@@ -19,8 +19,7 @@ def load_model(name):
     model_path = {
         "InceptionV3": "model/InceptionV3_Orignal_Data.keras",
         "InceptionResNet": "model/Inception_ResNet_Orignal_Data.keras",
-        # Correct the model path if needed
-        "ResNet50": "model/ResNet50_Orignal_Data.keras",
+        "DenseNet": "model/DenseNet_Orignal_Data.keras",
         "VGG16": "model/VGG16_Orignal_Data.keras",
     }
 
@@ -55,7 +54,7 @@ def predict():
         image_tensor299 = tf.expand_dims(image_resized299, 0)
 
         # List of models to use for predictions
-        model_names = ["InceptionV3", "InceptionResNet", "ResNet50", "VGG16"]
+        model_names = ["InceptionV3", "InceptionResNet", "DenseNet", "VGG16"]
 
         # Predict using loaded models
         predictions = []
