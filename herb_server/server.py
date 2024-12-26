@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
+from dotenv import load_dotenv
 import tensorflow as tf
 import numpy as np
 import base64
@@ -8,31 +9,34 @@ import os
 app = Flask(__name__)
 CORS(app)
 
-# Load models into memory
+load_dotenv()
+
+# Load models into memory (only once)
 models = {}
 
 
-def load_models():
+def load_model(name):
     model_path = {
         "InceptionV3": "model/InceptionV3_Orignal_Data.keras",
         "InceptionResNet": "model/Inception_ResNet_Orignal_Data.keras",
-        "ResNet50": "model/DenseNet_Orignal_Data.keras",
+        # Correct the model path if needed
+        "ResNet50": "model/ResNet50_Orignal_Data.keras",
         "VGG16": "model/VGG16_Orignal_Data.keras",
     }
 
-    # Ensure all models are loaded into memory
-    for name, path in model_path.items():
-        models[name] = tf.keras.models.load_model(path)
-    print("Models loaded successfully.")
+    if name not in model_path:
+        raise ValueError(f"Model '{name}' not found. Available models: {list(model_path.keys())}")
 
+    if name not in models:
+        models[name] = tf.keras.models.load_model(model_path[name])
 
-# Load models on server startup
-load_models()
+    return models[name]
 
 
 @app.route('/predict', methods=['POST'])
 def predict():
-    species_dict = {1: 'Aloevera', 2: 'Ashoka', 3: 'Betel', 4: 'Curry_Leaf', 5: 'Tulsi'}
+    species_dict = {1: 'Aloevera', 2: 'Ashoka',
+                    3: 'Betel', 4: 'Curry_Leaf', 5: 'Tulsi'}
 
     try:
         # Receive Image data as base64 string
@@ -50,31 +54,37 @@ def predict():
         image_tensor224 = tf.expand_dims(image_resized224, 0)
         image_tensor299 = tf.expand_dims(image_resized299, 0)
 
+        # List of models to use for predictions
+        model_names = ["InceptionV3", "InceptionResNet", "ResNet50", "VGG16"]
+
         # Predict using loaded models
-        predictions_inception_v3 = models["InceptionV3"].predict(image_tensor299)
-        predictions_inception_resnet = models["InceptionResNet"].predict(image_tensor299)
-        predictions_resnet50 = models["ResNet50"].predict(image_tensor224)
-        predictions_vgg16 = models["VGG16"].predict(image_tensor224)
+        predictions = []
+        for model_name in model_names:
+            model = load_model(model_name)
+            if model_name in ["InceptionV3", "InceptionResNet"]:
+                predictions.append(model.predict(image_tensor299))
+            else:
+                predictions.append(model.predict(image_tensor224))
 
-        # Combine all model predictions
-        predictions = np.array(
-            [predictions_inception_v3, predictions_inception_resnet, predictions_resnet50, predictions_vgg16])
+        # Combine all model predictions into a single array
+        predictions = np.array(predictions)
 
-        # Get the index of the highest prediction across all models
-        # Flatten to 1D for easier access
+        # Find the index of the highest prediction across all models
         highest_predictions = np.argmax(predictions, axis=2).flatten()
 
-        # Find the species corresponding to the highest prediction
-        # +1 because species_dict is 1-indexed
-        species = [species_dict.get(pred+1, "Unknown") for pred in highest_predictions]
+        # Map prediction indices to species
+        species = [species_dict.get(pred + 1, "Unknown")for pred in highest_predictions]
+
+        # Determine the most common species
         result = max(set(species), key=species.count)
 
         return jsonify({"name": result})
-        # return (result);
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
 
+port = int(os.getenv("PORT", 5000))
+
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000)
+    app.run(host="0.0.0.0", port=port)
