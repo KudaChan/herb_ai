@@ -71,7 +71,7 @@ export default function Home() {
             Analyze Image
           </button>
           {analysisResult && (
-            <div className="mt-4">
+            <div className="mt-4 text-white text-2xl">
               <h3 className="font-bold">Analysis Result:</h3>
               <pre>{JSON.stringify(analysisResult, null, 2)}</pre> {/* Display the result */}
             </div>
