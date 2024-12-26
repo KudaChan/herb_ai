@@ -17,27 +17,41 @@ export default function Home() {
 
   const handleAnalyze = async (e: React.FormEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    if (!selectedImage) return;
-
-    // Create a FormData object to send the image to your AI model
-    const formData = new FormData();
-    if (selectedImage) {
-      const file = await fetch(selectedImage).then(res => res.blob());
-      formData.append('image', file, 'image');
-    }
+    if (!selectedImage) return "No selected image";
 
     try {
-      const response = await fetch('/api/predict', { // Adjust the endpoint as needed
-        method: 'POST',
-        body: formData,
-      });
+      //fetch the image as a blob
+      const file = await fetch(selectedImage).then(res => res.blob());
 
-      if (response.ok) {
-        const result = await response.json();
-        setAnalysisResult(result); // Set the analysis result from the response
-      } else {
-        console.error('Error analyzing image:', response.statusText);
-      }
+      // Convert the image Blob to a base64 string
+      const reader = new FileReader();
+      reader.onloadend = async () => {
+        const base64Image = reader.result?.toString().split(',')[1];
+
+        if (base64Image) {
+          // Create the request body with the base64 image
+          const requestBody = { "imageBuffer": base64Image };
+
+          const response = await fetch('http://192.168.224.26:5000/predict', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(requestBody),
+          });
+
+          if (response.ok) {
+            const result = await response.json();
+            setAnalysisResult(result.name); // Set the analysis result from the response
+          } else {
+            console.error('Error analyzing image:', response.statusText);
+          }
+        } else {
+          console.error('Error selecting image:', 'No base64 image');
+        }
+      };
+
+      reader.readAsDataURL(file); // Start reading the image as a base64 string
     } catch (error) {
       console.error('Error:', error);
     }
@@ -54,28 +68,30 @@ export default function Home() {
             <input {...getInputProps()} />
             <p className='text-black'>Drag &apos;n&apos; drop an image here, or click to select one</p>
           </div>
-          {selectedImage && (
-            <div className="mt-4 w-full h-auto max-h-[300px] max-w-[300px]">
-              <Image
-                src={selectedImage}
-                alt="Selected"
-                className="mt-2 w-full h-auto rounded-xl"
-                width={300} height={300}
-                objectFit='contain' />
+          <div className="flex flex-row items-center justify-between mx-5 w-2/3">
+            {selectedImage && (
+              <div className="m-5 w-full h-auto max-h-[300px] max-w-[300px]">
+                <Image
+                  src={selectedImage}
+                  alt="Selected"
+                  className="mt-2 w-full h-auto rounded-xl"
+                  width={300} height={300} />
+              </div>
+            )}
+            <div className='flex flex-col items-center justify-center w-full bg-white/50 p-5 rounded-xl shadow-lg'>
+              {analysisResult && (
+                <div className="mt-4 text-black text-5xl text-semibold">
+                  <pre>{analysisResult}</pre>
+                </div>
+              )}
+              <button
+                onClick={handleAnalyze}
+                className="bg-blue-500 text-white px-4 py-2 my-4 rounded"
+              >
+                Analyze Image
+              </button>
             </div>
-          )}
-          <button
-            onClick={handleAnalyze}
-            className="bg-blue-500 text-white px-4 py-2 my-4 rounded"
-          >
-            Analyze Image
-          </button>
-          {analysisResult && (
-            <div className="mt-4 text-white text-2xl">
-              <h3 className="font-bold">Analysis Result:</h3>
-              <pre>{JSON.stringify(analysisResult, null, 2)}</pre> {/* Display the result */}
-            </div>
-          )}
+          </div>
         </div>
       </div>
     </div>

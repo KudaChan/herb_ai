@@ -1,0 +1,2 @@
+*.keras filter=lfs diff=lfs merge=lfs -text
+herb_server/model/*.keras filter=lfs diff=lfs merge=lfs -text
