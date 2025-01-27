@@ -2,8 +2,8 @@ import type { Config } from "tailwindcss";
 
 export default {
   content: [
-    "./pages/**/*.{js,ts,jsx,tsx,mdx}",
-    "./components/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/**/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/**/*.{js,ts,jsx,tsx,mdx}",
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
@@ -18,19 +18,14 @@ export default {
       serif: ['Merriweather', 'serif'],
     },
     extend: {
-      backgroundImage: {
-        bgImage:  "url('/bg.jpg')",
-      },
-      spacing: {
-        '128': '32rem',
-        '144': '36rem',
-      },
-      borderRadius: {
-        '4xl': '2rem',
-      },
       colors: {
-        background: "var(--background)",
-        foreground: "var(--foreground)",
+        primary: "#164d36",
+        secondary: "#edfaec",
+        tertiary: "#afe5b1",
+        "black-100": "#100d25",
+        "black-200": "#090325",
+        "white-100": "#fbf9f5",
+        "btn": "#3ec040",
       },
     },
   },

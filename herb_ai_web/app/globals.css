@@ -1,24 +1,30 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap");
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+  scroll-behavior: smooth;
+  color-scheme: dark;
 }
 
-/* @media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-} */
-
+html,
 body {
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
-  /* background-image: url('https://github.com/KudaChan/herb_ai/blob/71ef2583b4cae5005c796d694abce846cd768a3f/herb_ai_web/public/bg.jpg');
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat; */
+  margin: 0;
+  padding: 0;
+}
+
+@layer utilities {
+  .c-space {
+    @apply sm:px-10 px-5;
+  }
+
+  .social-icon {
+    @apply w-12 h-12 rounded-full flex justify-center items-center bg-primary border border-secondary;
+  }
 }

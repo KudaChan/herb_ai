@@ -2,9 +2,13 @@
   "cSpell.words": [
     "Aloevera",
     "Ashoka",
+    "asynciterable",
+    "convolutional",
     "dotenv",
     "frombuffer",
     "Graphik",
+    "heroimg",
+    "ILSVRC",
     "jsonify",
     "keras",
     "mapbox",
@@ -13,6 +17,7 @@
     "tfjs",
     "Tulsi",
     "turbopack",
+    "tvjj",
     "venv"
   ]
 }
