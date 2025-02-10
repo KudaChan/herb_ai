@@ -27,13 +27,13 @@ const Example = () => {
         <h2 className={`${style.sectionHeadText} text-primary/80`}>Example</h2>
         <p className={`${style.sectionSubText} text-primary/60`}>Currently we support these 3 plants</p>
       </div>
-      <div className="backdrop-blur-sm bg-white/30 p-10 w-full rounded-2xl shadow-lg z-10 mt-10 flex justify-center items-center">
+      <div className="backdrop-blur-sm bg-white/30 p-10 w-full rounded-2xl shadow-lg z-10 mt-10 flex flex-wrap justify-center items-center">
         {examples.map((example) => (
           <div key={example.name} className="flex flex-col items-center justify-center px-5 bg-white/50 rounded-xl my-5 mx-2 shadow-2xl">
             <Image
               src={example.img}
               alt={example.name}
-              className=" rounded-3xl mt-5 h-60 w-60 shadow-2xl"
+              className=" rounded-3xl mt-5 max-sm:h-40 h-60 w-60 shadow-2xl"
             />
             <p className='text-[22px] text-primary'>{example.name}</p>
           </div>
